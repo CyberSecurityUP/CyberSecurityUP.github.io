@@ -6,7 +6,13 @@
 		<link href="includes/style-scan-new.css" rel="stylesheet" type="text/css" />
 		<link rel="SHORTCUT ICON" href="./images/favicon.ico" />
 	</head>
+
 <body>
+	<script type="text/javascript">
+    document.getElementById("myButton").onclick = function () {
+        location.href = "request.html";
+    };
+	</script>
 	<span id="m:i">
 		<header>
 			<img name="logo" class="displayed" src="./images/logo.png" height="75">
@@ -43,12 +49,8 @@
 									<tr>
 										<td></td>
 										<td>
-											<input class="ocmsLoginButton" name="ocmsLoginButton" value="Login" type="submit">
-															<script>
-															    function ocmsLoginButton(){
-																window.location='request.html';
-															    }
-															</script>
+											<input id="myButton" class="ocmsLoginButton" name="ocmsLoginButton" value="Login" type="submit">
+															
 										</td>
 									</tr>
 								</tbody>
