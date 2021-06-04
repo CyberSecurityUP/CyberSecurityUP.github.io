@@ -21,6 +21,27 @@ footer#bottom {
 	box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, 0.2), 0px 1px 3px 0px rgba(0, 0, 0, 0.3), 0px 1px 5px 0px rgba(0, 0, 0, 0.1);
 }
 
+.myButton {
+	background-color:#a3a3a3;
+	border-radius:28px;
+	border:1px solid #ffffff;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:17px;
+	padding:16px 31px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #2f6627;
+}
+.myButton:hover {
+	background-color:#ffffff;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
+
 /* Do not edit below this line */
 
 BODY {
