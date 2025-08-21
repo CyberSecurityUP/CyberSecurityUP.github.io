@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SQL & GoogleSQL Trainer — 30 desafios</title>
+<style>
+:root{--bg:#0f1220;--card:#181c2f;--muted:#9fb2c2;--text:#e8eef2;--btn:#232842;--good:#7cffa7;--bad:#ff7a7a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial}
+header{padding:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+h3{margin:8px 0}
+small{color:var(--muted)}
+.wrap{max-width:940px;margin:0 auto;padding:12px}
+.card{background:#181c2f;border:1px solid #2a3150;border-radius:16px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.schema,.question,.status{background:#121528;border:1px solid #2a3150;border-radius:12px;padding:10px;line-height:1.35}
+.schema{flex:1 1 260px;min-width:260px;white-space:pre-wrap;color:#b9c7d6}
+.question{flex:2 1 320px;min-width:320px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+button{border:1px solid #36406b;background:var(--btn);color:var(--text);padding:10px 12px;border-radius:12px;font-weight:700;cursor:pointer}
+button.primary{background:linear-gradient(90deg,#2dd4bf,#22c1c3);color:#041218;border:0}
+.badge{display:inline-block;padding:3px 8px;border-radius:999px;font-size:12px;background:#1d243e;border:1px solid #2a3150;color:#9fb2c2}
+.hint{background:#10142a;border:1px dashed #375b87;color:#d2e6ff;border-radius:10px;padding:8px 10px;margin-top:8px;display:none}
+.status{min-height:42px;display:flex;align-items:center;gap:10px}
+.ok{color:var(--good)}.no{color:var(--bad)}
+.progress{height:10px;border-radius:999px;background:#14182c;border:1px solid #2a3150;overflow:hidden}
+.progress>div{height:100%;background:linear-gradient(90deg,#22c1c3,#5eead4);width:0%}
+textarea{width:100%;min-height:150px;background:#0d1020;border:1px solid #2a3150;color:var(--text);border-radius:12px;padding:10px;font:14px/1.4 ui-monospace,monospace}
+@media (max-width:520px){.schema,.question{min-width:100%}}
+</style>
+</head>
+<body>
+<header>
+  <div><strong>SQL & GoogleSQL Trainer</strong> — 30 desafios</div>
+  <div><small id="score">Pontos: 0/30</small> • <small id="streak">Streak: 0🔥</small></div>
+</header>
+<div class="wrap">
+  <div class="card">
+    <div class="row">
+      <div class="schema">
+        <div class="badge">Esquema</div>
+        <pre id="schemaBox"></pre>
+      </div>
+      <div class="question">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+          <span class="badge" id="dialect">SQL</span>
+          <small id="idx">Desafio 1 de 30</small>
+        </div>
+        <h3 id="qText">Carregando…</h3>
+        <small>Tente escrever apenas a <b>query</b> (sem ponto e vírgula obrigatório).</small>
+        <textarea id="answer" placeholder="Escreva sua query aqui..."></textarea>
+        <div class="controls">
+          <button class="primary" id="btnCheck">Verificar</button>
+          <button id="btnNext">Próxima ▶</button>
+          <button id="btnHint">Dica 💡</button>
+          <button id="btnSkip">Pular ⏭</button>
+          <button id="btnReset" title="Zera pontuação e progresso">Recomeçar 🔄</button>
+        </div>
+        <div class="status"><span id="state">🤔</span><span id="stateText">Digite sua consulta e toque em <b>Verificar</b>.</span></div>
+        <div class="hint" id="hint">Dica aqui</div>
+        <div class="progress" aria-label="Progresso"><div id="bar"></div></div>
+        <small style="display:block;margin-top:6px">Progresso salvo (localStorage). Atalho: <b>Ctrl/⌘ + Enter</b> verifica.</small>
+      </div>
+    </div>
+  </div>
+  <p style="text-align:center;color:#9fb2c2;margin:12px 0">Feito para iniciantes em ciência de dados · SQL padrão + GoogleSQL (BigQuery)</p>
+</div>
+
+<script>
+(function(){
+  const $ = s => document.querySelector(s);
+  const norm = s => (s||"").toLowerCase().replace(/\s+/g," ").replace(/;+$/,"").trim();
+  const all = (txt,toks)=>toks.every(t=>txt.includes(t));
+  const anyOK = (txt,arrs)=>arrs.some(a=>all(txt,a.map(norm)));
+  const KEY = "sqltrainer_v3_progress";
+
+  // ===== 30 DESAFIOS =====
+  const C = [
+    {d:"SQL", q:"1) Liste todas as colunas da tabela de clientes.", schema:"Tabela: customers(id INT, name STRING, email STRING, country STRING)", alts:[[ "select","*","from","customers" ]], tips:["Use SELECT * FROM customers"]},
+
+    {d:"SQL", q:"2) Conte quantos pedidos existem.", schema:"Tabela: orders(id INT, customer_id INT, order_date DATE, total NUMERIC)", alts:[[ "select","count","from","orders" ]], tips:["COUNT(*) FROM orders"]},
+
+    {d:"SQL", q:"3) Retorne as categorias distintas de produtos.", schema:"Tabela: products(id INT, name STRING, category STRING, price NUMERIC)", alts:[[ "select","distinct","category","from","products" ]], tips:["DISTINCT remove duplicados"]},
+
+    {d:"SQL", q:"4) Calcule a receita por produto (preço x quantidade) a partir dos itens do pedido.", schema:"Tabelas: order_items(order_id INT, product_id INT, quantity INT), products(id INT, price NUMERIC)", alts:[[ "select","product_id","sum","price","*","quantity","from","order_items","join","products","on","product_id","group by","product_id" ]], tips:["SUM(p.price * oi.quantity) com JOIN e GROUP BY product_id"]},
+
+    {d:"SQL", q:"5) Valor médio de pedido por cliente.", schema:"Tabelas: orders(id, customer_id, total), customers(id, name)", alts:[[ "select","customer_id","avg","total","from","orders","group by","customer_id" ]], tips:["AVG(total) por customer_id"]},
+
+    {d:"SQL", q:"6) Top 5 produtos por receita total.", schema:"Tabelas: order_items(order_id, product_id, quantity), products(id, price, name)", alts:[[ "select","product_id","sum","price","*","quantity","from","order_items","join","products","group by","product_id","order by","sum","desc","limit","5" ]], tips:["ORDER BY SUM(...) DESC LIMIT 5"]},
+
+    {d:"SQL", q:"7) Pedidos feitos em 2024.", schema:"Tabela: orders(id, order_date DATE, total)", alts:[
+      [ "select","*","from","orders","where","order_date","between","2024-01-01","and","2024-12-31" ],
+      [ "select","*","from","orders","where","extract","year","from","order_date","=","2024" ]
+    ], tips:["BETWEEN 2024-01-01 AND 2024-12-31","Ou EXTRACT(YEAR FROM order_date)=2024"]},
+
+    {d:"SQL", q:"8) Clientes sem nenhum pedido (anti-join).", schema:"Tabelas: customers(id, name), orders(id, customer_id)", alts:[
+      [ "select","customers.*","from","customers","left","join","orders","on","customers.id","=","orders.customer_id","where","orders.id","is null" ],
+      [ "select","*","from","customers","left join","orders","on","customers.id","orders.customer_id","where","orders.customer_id","is null" ]
+    ], tips:["LEFT JOIN + WHERE ... IS NULL"]},
+
+    {d:"GoogleSQL", q:"9) % de pedidos com desconto > 0 (evite divisão por zero).", schema:"Tabela: orders(id, total, discount NUMERIC)", alts:[
+      [ "select","safe_divide","sum","case","when","discount",">","0","then","1","else","0","end",",","count","from","orders" ]
+    ], tips:["SAFE_DIVIDE(numerador, denominador)","CASE WHEN discount>0 THEN 1 ELSE 0 END"]},
+
+    {d:"SQL", q:"10) Vendas por ano e mês.", schema:"Tabela: orders(order_date DATE, total NUMERIC)", alts:[
+      [ "select","extract","year","from","order_date","as","y","extract","month","from","order_date","as","m","sum","total","from","orders","group by","y","m" ]
+    ], tips:["EXTRACT(YEAR/MONTH FROM order_date) + SUM(total)"]},
+
+    {d:"SQL", q:"11) Categoria mais vendida (por unidades).", schema:"Tabelas: order_items(product_id, quantity), products(id, category)", alts:[
+      [ "select","category","sum","quantity","from","order_items","join","products","on","product_id","group by","category","order by","sum","desc","limit","1" ]
+    ], tips:["Ordene por SUM(quantity) DESC LIMIT 1"]},
+
+    {d:"SQL", q:"12) Produtos com média de avaliação >= 4.", schema:"Tabela: ratings(product_id INT, stars INT)", alts:[
+      [ "select","product_id","avg","stars","from","ratings","group by","product_id","having","avg","stars",">=","4" ]
+    ], tips:["HAVING filtra agregações"]},
+
+    {d:"SQL", q:"13) Clientes cujo nome inicia com A.", schema:"Tabela: customers(name STRING)", alts:[
+      [ "select","*","from","customers","where","name","like","a%" ]
+    ], tips:["LIKE 'A%' (não diferencia maiúsculas/minúsculas se usar LOWER(name))"]},
+
+    {d:"GoogleSQL", q:"14) Idade dos clientes em anos.", schema:"Tabela: customers(id, birth_date DATE)", alts:[
+      [ "select","id","date_diff","current_date","birth_date","year","from","customers" ]
+    ], tips:["DATE_DIFF(CURRENT_DATE(), birth_date, YEAR)"]},
+
+    {d:"GoogleSQL", q:"15) Top 3 clientes por receita dentro de cada país (usando janela + QUALIFY).", schema:"Tabelas: customers(id, country), orders(id, customer_id, total)", alts:[
+      [ "select","country","customer_id","sum","total","as","rev","from","orders","join","customers","on","customer_id","group by","country","customer_id","qualify","row_number","over","partition by","country","order by","rev","desc","<=","3" ]
+    ], tips:["ROW_NUMBER() OVER(PARTITION BY country ORDER BY rev DESC) + QUALIFY rn <= 3"]},
+
+    {d:"GoogleSQL", q:"16) Mediana aproximada do preço dos produtos.", schema:"Tabela: products(price NUMERIC)", alts:[
+      [ "select","approx_quantiles","price","2","[","offset","1","]","from","products" ]
+    ], tips:["APPROX_QUANTILES(price, 2)[OFFSET(1)]"]},
+
+    {d:"GoogleSQL", q:"17) Converter texto de data para DATE.", schema:"Tabela: events(event_date_str STRING no formato '2025-08-01')", alts:[
+      [ "select","parse_date","%y-%m-%d".replace('%y','%Y'),"event_date_str","from","events" ]  // token safe
+    ], tips:['PARSE_DATE("%Y-%m-%d", event_date_str)']},
+
+    {d:"GoogleSQL", q:"18) Explodir tags separadas por vírgula em linhas.", schema:"Tabela: items(id, tags STRING ex: 'ai,data,sql')", alts:[
+      [ "select","id","tag","from","items","cross","join","unnest","split","tags","," ,"as","tag" ]
+    ], tips:['SPLIT(tags, ",") + UNNEST(...)']},
+
+    {d:"SQL", q:"19) Usuários que compraram categorias 'A' e 'B'.", schema:"Tabelas: orders(id, customer_id), order_items(order_id, product_id), products(id, category)", alts:[
+      [ "select","customer_id","from","orders","join","order_items","on","orders.id","order_items.order_id","join","products","on","product_id","group by","customer_id","having","count","distinct","category",">=","2","and" ],
+      [ "select","customer_id","from","orders","join","order_items","on","orders.id","order_items.order_id","join","products","on","product_id","where","category","in","a","b","group by","customer_id","having","count","distinct","category",">=","2" ]
+    ], tips:["Filtre A/B e use HAVING COUNT(DISTINCT category) >= 2"]},
+
+    {d:"SQL", q:"20) Novos clientes por mês (data do primeiro pedido).", schema:"Tabelas: orders(customer_id, order_date DATE)", alts:[
+      [ "with","firsts","as","select","customer_id","min","order_date","as","first","from","orders","group by","customer_id","select","extract","year","from","first","as","y","extract","month","from","first","as","m","count","from","firsts","group by","y","m" ]
+    ], tips:["CTE: MIN(order_date) por cliente; depois agregue por ano/mês"]},
+
+    {d:"GoogleSQL", q:"21) Taxa de conversão por dia = pedidos / sessões ativas.", schema:"Tabelas: sessions(day DATE, active_sessions INT), orders(day DATE, id)", alts:[
+      [ "select","s.day","safe_divide","count","o.id","s.active_sessions","as","cv","from","sessions","s","left","join","orders","o","on","s.day","=","o.day","group by","s.day","s.active_sessions" ]
+    ], tips:["SAFE_DIVIDE(COUNT(o.id), s.active_sessions) por dia"]},
+
+    {d:"SQL", q:"22) E-mails duplicados.", schema:"Tabela: customers(email STRING)", alts:[
+      [ "select","email","count","from","customers","group by","email","having","count",">","1" ]
+    ], tips:["GROUP BY email HAVING COUNT(*) > 1"]},
+
+    {d:"GoogleSQL", q:"23) Top categorias por média de estrelas (empates inclusos).", schema:"Tabela: ratings(category STRING, stars INT)", alts:[
+      [ "select","category","avg","stars","as","m","from","ratings","group by","category","qualify","dense_rank","over","order by","m","desc","<=","3" ]
+    ], tips:["DENSE_RANK() OVER(ORDER BY m DESC) + QUALIFY"]},
+
+    {d:"SQL", q:"24) Normalizar e-mails: minúsculo e sem espaços.", schema:"Tabela: customers(email STRING)", alts:[
+      [ "select","lower","trim","email","as","email_norm","from","customers" ]
+    ], tips:["LOWER(TRIM(email)) AS email_norm"]},
+
+    {d:"SQL", q:"25) Classificar produto por faixa de preço.", schema:"Tabela: products(price NUMERIC)", alts:[
+      [ "select","case","when","price","<","10","then","low","when","price","between","10","and","99","then","mid","else","high","end","as","faixa","from","products" ]
+    ], tips:["CASE WHEN ... THEN ... ELSE ... END"]},
+
+    {d:"SQL", q:"26) Última data de pedido por cliente.", schema:"Tabela: orders(customer_id, order_date DATE)", alts:[
+      [ "select","customer_id","max","order_date","as","last_date","from","orders","group by","customer_id" ]
+    ], tips:["MAX(order_date) por cliente"]},
+
+    {d:"SQL", q:"27) Média móvel de 7 dias de vendas diárias.", schema:"Tabela: daily_sales(d DATE, amount NUMERIC)", alts:[
+      [ "select","d","avg","amount","over","order by","d","rows","between","6","preceding","and","current","row","as","mm7","from","daily_sales" ]
+    ], tips:["ROWS BETWEEN 6 PRECEDING AND CURRENT ROW"]},
+
+    {d:"SQL", q:"28) Países com receita acima da média geral.", schema:"Tabelas: customers(id, country), orders(id, customer_id, total)", alts:[
+      [ "select","country","sum","total","as","rev","from","orders","join","customers","on","customer_id","group by","country","having","sum","total",">","select","avg" ]
+    ], tips:["Compare SUM(total) com a média global via subconsulta"]},
+
+    {d:"SQL", q:"29) Pedidos com itens de > 3 categorias distintas.", schema:"Tabelas: orders(id), order_items(order_id, product_id), products(id, category)", alts:[
+      [ "select","order_id","from","order_items","join","products","on","product_id","group by","order_id","having","count","distinct","category",">","3" ]
+    ], tips:["COUNT(DISTINCT category) > 3 por order_id"]},
+
+    {d:"SQL", q:"30) Preço nulo deve virar 0.", schema:"Tabela: products(id, price NUMERIC NULLABLE)", alts:[
+      [ "select","id","coalesce","price","0","as","price","from","products" ],
+      [ "select","id","ifnull","price","0","from","products" ]
+    ], tips:["COALESCE(price, 0) ou IFNULL(price, 0)"]}
+  ];
+
+  let idx=0, score=0, streak=0, answers={};
+
+  function load(){
+    try{
+      const s = JSON.parse(localStorage.getItem(KEY)||"{}");
+      if(s){ idx=s.idx||0; score=s.score||0; streak=s.streak||0; answers=s.answers||{}; }
+    }catch{}
+  }
+  function save(){ localStorage.setItem(KEY, JSON.stringify({idx,score,streak,answers})); }
+
+  function render(){
+    const c = C[idx];
+    $("#schemaBox").textContent = c.schema;
+    $("#qText").textContent = c.q;
+    $("#dialect").textContent = c.d;
+    $("#idx").textContent = `Desafio ${idx+1} de ${C.length}`;
+    $("#answer").value = (answers[idx] && answers[idx] !== "__OK__") ? answers[idx] : "";
+    $("#state").textContent = "🤔";
+    $("#stateText").innerHTML = "Digite sua consulta e toque em <b>Verificar</b>.";
+    $("#hint").style.display = "none";
+    $("#score").textContent = `Pontos: ${score}/${C.length}`;
+    $("#streak").textContent = `Streak: ${streak}🔥`;
+    const done = Object.values(answers).filter(v=>v==="__OK__").length;
+    $("#bar").style.width = Math.round(100*done/C.length) + "%";
+  }
+
+  function check(){
+    const c = C[idx];
+    const user = norm($("#answer").value);
+    if(!user){ $("#state").textContent="📝"; $("#stateText").textContent="Digite algo primeiro."; return; }
+    answers[idx] = $("#answer").value;
+    const ok = anyOK(user, c.alts);
+    if(ok){
+      if(answers[idx] !== "__OK__"){ score++; streak++; answers[idx]="__OK__"; }
+      $("#state").textContent="✅";
+      $("#stateText").innerHTML = '<span class="ok">Correto! Boa! 🎉</span>';
+    }else{
+      streak=0;
+      $("#state").textContent="❌";
+      $("#stateText").innerHTML = '<span class="no">Ainda não. Tente ajustar a lógica ou a sintaxe.</span>';
+    }
+    $("#score").textContent = `Pontos: ${score}/${C.length}`;
+    $("#streak").textContent = `Streak: ${streak}🔥`;
+    const done = Object.values(answers).filter(v=>v==="__OK__").length;
+    $("#bar").style.width = Math.round(100*done/C.length) + "%";
+    save();
+  }
+
+  function next(){ idx = (idx+1) % C.length; render(); save(); }
+  function skip(){ streak=0; $("#streak").textContent=`Streak: ${streak}🔥`; next(); }
+  function hint(){
+    const c = C[idx];
+    if(!c.tips || !c.tips.length) return;
+    const el = $("#hint");
+    const shown = parseInt(el.getAttribute("data-i")||"0",10);
+    el.style.display="block";
+    el.textContent = "Dica: " + c.tips[Math.min(shown, c.tips.length-1)];
+    el.setAttribute("data-i", String(shown+1));
+  }
+  function resetAll(){
+    if(confirm("Deseja reiniciar e apagar o progresso?")){
+      idx=0; score=0; streak=0; answers={}; save(); render();
+    }
+  }
+
+  $("#btnCheck").onclick = check;
+  $("#btnNext").onclick = next;
+  $("#btnSkip").onclick = skip;
+  $("#btnHint").onclick = hint;
+  $("#btnReset").onclick = resetAll;
+  $("#answer").addEventListener("keydown",e=>{ if((e.ctrlKey||e.metaKey) && e.key==="Enter"){ e.preventDefault(); check(); } });
+
+  load(); render();
+})();
+</script>
+</body>
+</html>
+

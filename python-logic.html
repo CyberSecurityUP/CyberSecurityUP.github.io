@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Python Básico Trainer — 30 exercícios</title>
+<style>
+:root{--bg:#0f1220;--card:#181c2f;--muted:#9fb2c2;--text:#e8eef2;--btn:#232842;--good:#7cffa7;--bad:#ff7a7a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial}
+header{padding:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+h3{margin:10px 0 6px}small{color:var(--muted)}
+.wrap{max-width:980px;margin:0 auto;padding:12px}
+.card{background:#181c2f;border:1px solid #2a3150;border-radius:16px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.info,.exercise,.status{background:#121528;border:1px solid #2a3150;border-radius:12px;padding:10px;line-height:1.35}
+.info{flex:1 1 260px;min-width:260px;color:#b9c7d6;white-space:pre-wrap}
+.exercise{flex:2 1 360px;min-width:320px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+button{border:1px solid #36406b;background:var(--btn);color:var(--text);padding:10px 12px;border-radius:12px;font-weight:700;cursor:pointer}
+button.primary{background:linear-gradient(90deg,#2dd4bf,#22c1c3);color:#041218;border:0}
+.badge{display:inline-block;padding:3px 8px;border-radius:999px;font-size:12px;background:#1d243e;border:1px solid #2a3150;color:#9fb2c2}
+.hint,.solution{background:#10142a;border:1px dashed #375b87;color:#d2e6ff;border-radius:10px;padding:8px 10px;margin-top:8px;display:none;white-space:pre-wrap}
+.status{min-height:42px;display:flex;align-items:center;gap:10px}
+.ok{color:var(--good)}.no{color:var(--bad)}
+.progress{height:10px;border-radius:999px;background:#14182c;border:1px solid #2a3150;overflow:hidden}
+.progress>div{height:100%;background:linear-gradient(90deg,#22c1c3,#5eead4);width:0%}
+textarea{width:100%;min-height:180px;background:#0d1020;border:1px solid #2a3150;color:var(--text);border-radius:12px;padding:10px;font:14px/1.4 ui-monospace,monospace}
+code{background:#0d1020;border:1px solid #2a3150;border-radius:8px;padding:2px 6px}
+@media (max-width:560px){.info,.exercise{min-width:100%}}
+</style>
+</head>
+<body>
+<header>
+  <div><strong>Python Básico Trainer</strong> — 30 exercícios</div>
+  <div><small id="score">Pontos: 0/30</small> • <small id="streak">Streak: 0🔥</small></div>
+</header>
+
+<div class="wrap">
+  <div class="card">
+    <div class="row">
+      <div class="info">
+        <div class="badge">Sobre o exercício</div>
+        <pre id="aboutBox"></pre>
+      </div>
+      <div class="exercise">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+          <span class="badge" id="tag">Básico</span>
+          <small id="idx">Exercício 1 de 30</small>
+        </div>
+        <h3 id="qText">Carregando…</h3>
+        <div class="small" id="examples" style="color:#b9c7d6"></div>
+        <textarea id="answer" placeholder="Escreva seu código Python aqui..."></textarea>
+        <div class="controls">
+          <button class="primary" id="btnCheck">Verificar</button>
+          <button id="btnHint">Dica 💡</button>
+          <button id="btnShow">Mostrar solução 👀</button>
+          <button id="btnNext">Próximo ▶</button>
+          <button id="btnSkip">Pular ⏭</button>
+          <button id="btnReset" title="Zera pontuação e progresso">Recomeçar 🔄</button>
+        </div>
+        <div class="status"><span id="state">🤔</span><span id="stateText">Escreva a solução e toque em <b>Verificar</b>.</span></div>
+        <div class="hint" id="hint">Dica aqui</div>
+        <div class="solution" id="solution">Solução aqui</div>
+        <div class="progress" aria-label="Progresso"><div id="bar"></div></div>
+        <small style="display:block;margin-top:6px;color:#9fb2c2">Correção por padrões (tokens); aceita variações comuns. Progresso salvo (localStorage). Atalho: <b>Ctrl/⌘ + Enter</b> verifica.</small>
+      </div>
+    </div>
+  </div>
+  <p style="text-align:center;color:#9fb2c2;margin:12px 0">Foco em <code>print</code>, <code>input</code>, <code>if</code>, <code>for</code>, <code>while</code> e operações básicas.</p>
+</div>
+
+<script>
+(function(){
+  const $ = s => document.querySelector(s);
+  // Normaliza: minúsculas, remove comentários, aspas (mantém conteúdo), compacta espaços
+  const norm = s => (s||"")
+      .replace(/#.*$/gm,"")
+      .replace(/['"`]/g,"")
+      .toLowerCase()
+      .replace(/\s+/g," ")
+      .trim();
+  const containsAll = (text,toks)=>toks.every(t=>text.includes(t));
+  const anyPatternOK = (text,alts)=>alts.some(arr=>containsAll(text,arr));
+  const KEY = "py_basico_trainer_v1";
+
+  // ===== 30 EXERCÍCIOS BÁSICOS =====
+  const XS = [
+    {tag:"print/input", q:"1) Peça o nome e imprima: Olá, <nome>!", 
+      about:"Objetivo: leitura e saída básica.\nConceitos: input(), print(), f-string ou concatenação.",
+      examples:"Entrada: Ana → Saída: Olá, Ana!",
+      patterns:[["input(","print("]],
+      tips:["nome = input(...); print(f'Olá, {nome}!')"],
+      solution:`nome = input("Seu nome: ") 
+print(f"Olá, {nome}!")`},
+
+    {tag:"soma", q:"2) Peça dois números inteiros e imprima a soma.",
+      about:"Objetivo: converter string em int.\nConceitos: int(), +, print().",
+      examples:"3 e 5 → 8",
+      patterns:[[ "int(","int(","+","print(" ],[ "map(","int","input(","split(","sum","print(" ]],
+      tips:["a=int(input()); b=int(input()); print(a+b)"],
+      solution:`a=int(input("A: ")); b=int(input("B: "))
+print("Soma:", a+b)`},
+
+    {tag:"média", q:"3) Peça dois números reais e imprima a média.",
+      about:"Objetivo: ponto flutuante.\nConceitos: float(), /, print().",
+      examples:"2.0 e 4.0 → 3.0",
+      patterns:[[ "float(","float(","/","print(" ]],
+      tips:["(a+b)/2"],
+      solution:`a=float(input("A: ")); b=float(input("B: "))
+print("Média:", (a+b)/2)`},
+
+    {tag:"aritmética", q:"4) Peça o raio e imprima a área do círculo (π=3.14159).",
+      about:"Objetivo: fórmula simples.\nConceitos: multiplicação, print().",
+      examples:"r=2 → área≈12.56636",
+      patterns:[[ "float(","*","*","print(" ]],
+      tips:["area = 3.14159 * r * r"],
+      solution:`PI=3.14159
+r=float(input("Raio: "))
+print("Área do círculo:", PI*r*r)`},
+
+    {tag:"par/ímpar", q:"5) Diga se um número é par ou ímpar.",
+      about:"Objetivo: condicional.\nConceitos: %, if/else.",
+      examples:"4 → Par | 5 → Ímpar",
+      patterns:[[ "int(","% 2","if","print(" ]],
+      tips:["n%2==0 → par"],
+      solution:`n=int(input("Número: "))
+print("Par" if n%2==0 else "Ímpar")`},
+
+    {tag:"sinal", q:"6) Diga se um número é positivo, negativo ou zero.",
+      about:"Objetivo: múltiplos ramos.\nConceitos: if/elif/else.",
+      examples:"-3 → Negativo | 0 → Zero | 5 → Positivo",
+      patterns:[[ "if","elif","else","print(" ]],
+      tips:["compare >0, <0 e senão"],
+      solution:`n=float(input("Número: "))
+if n>0: print("Positivo")
+elif n<0: print("Negativo")
+else: print("Zero")`},
+
+    {tag:"máximo", q:"7) Peça três números e imprima o maior usando if/elif/else.",
+      about:"Objetivo: comparações.\nConceitos: variáveis e atualização.",
+      examples:"1,9,3 → 9",
+      patterns:[[ "if","elif","print(" ]],
+      tips:["comece maior=a; compare com b e c"],
+      solution:`a=float(input("A: ")); b=float(input("B: ")); c=float(input("C: "))
+maior=a
+if b>maior: maior=b
+if c>maior: maior=c
+print("Maior:", maior)`},
+
+    {tag:"idade", q:"8) Maioridade: diga se idade ≥ 18.",
+      about:"Objetivo: comparação simples.",
+      examples:"18 → Maior de idade; 15 → Menor",
+      patterns:[[ "int(","if","print(" ]],
+      tips:["idade>=18 → maior"],
+      solution:`idade=int(input("Idade: "))
+print("Maior de idade" if idade>=18 else "Menor de idade")`},
+
+    {tag:"calc", q:"9) Mini calculadora: leia x, y e operador (+ - * /).",
+      about:"Objetivo: condicionais por operador.",
+      examples:"2, 3, * → 6",
+      patterns:[[ "input(","input(","input(","if","elif","print(" ]],
+      tips:["trate divisão por zero"],
+      solution:`x=float(input("X: "))
+y=float(input("Y: "))
+op=input("Operador (+ - * /): ").strip()
+if op=="+": print(x+y)
+elif op=="-": print(x-y)
+elif op=="*": print(x*y)
+elif op=="/":
+    print("Divisão por zero!" if y==0 else x/y)
+else: print("Operador inválido")`},
+
+    {tag:"conceito", q:"10) Nota (0–10): A(≥9), B(≥7), C(≥5), D(<5).",
+      about:"Objetivo: faixas numéricas.",
+      examples:"8 → B",
+      patterns:[[ "float(","if","elif","else","print(" ]],
+      tips:["verifique em ordem: 9,7,5"],
+      solution:`nota=float(input("Nota: "))
+if nota>=9: print("A")
+elif nota>=7: print("B")
+elif nota>=5: print("C")
+else: print("D")`},
+
+    {tag:"for", q:"11) Tabuada: dado n, imprima n x 1..10.",
+      about:"Objetivo: laço for com range.",
+      examples:"n=3 → 3x1..3x10",
+      patterns:[[ "int(","for","range(","print(" ]],
+      tips:["range(1,11)"],
+      solution:`n=int(input("Tabuada de: "))
+for i in range(1,11):
+    print(f"{n} x {i} = {n*i}")`},
+
+    {tag:"soma 1..n", q:"12) Some 1 até n.",
+      about:"Objetivo: acumular soma.",
+      examples:"n=5 → 15",
+      patterns:[[ "int(","for","range(","+=","print(" ]],
+      tips:["s+=i em laço"],
+      solution:`n=int(input("Somar até: "))
+s=0
+for i in range(1,n+1):
+    s+=i
+print("Soma:", s)`},
+
+    {tag:"while", q:"13) Contagem regressiva de n até 1 com while.",
+      about:"Objetivo: laço while.",
+      examples:"n=3 → 3,2,1",
+      patterns:[[ "int(","while","print(" ]],
+      tips:["while n>=1: n-=1"],
+      solution:`n=int(input("Começar de: "))
+while n>=1:
+    print(n)
+    n-=1`},
+
+    {tag:"fatorial", q:"14) Fatorial de n com for.",
+      about:"Objetivo: multiplicação acumulada.",
+      examples:"5 → 120",
+      patterns:[[ "int(","for","range(","*=","print(" ]],
+      tips:["fat*=i de 2..n"],
+      solution:`n=int(input("Fatorial de: "))
+fat=1
+for i in range(2,n+1):
+    fat*=i
+print("Fatorial:", fat)`},
+
+    {tag:"fizzbuzz", q:"15) FizzBuzz de 1..n.",
+      about:"Objetivo: ordem correta nas condições.",
+      examples:"5 → 1,2,Fizz,4,Buzz",
+      patterns:[[ "int(","for","range(","if","% 3","and","% 5","elif","print(" ]],
+      tips:["cheque 3 e 5 juntos primeiro"],
+      solution:`n=int(input("Até: "))
+for i in range(1,n+1):
+    if i%3==0 and i%5==0: print("FizzBuzz")
+    elif i%3==0: print("Fizz")
+    elif i%5==0: print("Buzz")
+    else: print(i)`},
+
+    {tag:"strings", q:"16) Conte vogais (a,e,i,o,u) de uma palavra (ignore maiúsculas).",
+      about:"Objetivo: laço e teste de pertença.",
+      examples:"Abacaxi → 4",
+      patterns:[[ "input(","lower()","for","in","in","aeiou","print(" ]],
+      tips:["ch in 'aeiou'"],
+      solution:`s=input("Palavra: ").lower()
+vogais=0
+for ch in s:
+    if ch in "aeiou":
+        vogais+=1
+print("Vogais:", vogais)`},
+
+    {tag:"strings", q:"17) Inverta um texto.",
+      about:"Objetivo: slicing.",
+      examples:"python → nohtyp",
+      patterns:[[ "input(","[::-1]","print(" ]],
+      tips:["s[::-1]"],
+      solution:`s=input("Texto: ")
+print(s[::-1])`},
+
+    {tag:"palíndromo", q:"18) Diga se uma frase é palíndromo (ignore espaços/caixa).",
+      about:"Objetivo: normalização + comparação com reverso.",
+      examples:"'Ame a ema' → Palíndromo",
+      patterns:[[ "input(","lower()","replace(","==","[::-1]","print(" ]],
+      tips:["compare t == t[::-1]"],
+      solution:`t=input("Frase: ").lower().replace(" ","")
+print("Palíndromo" if t==t[::-1] else "Não é palíndromo")`},
+
+    {tag:"listas", q:"19) Leia números (separados por espaço) e conte quantos > 0.",
+      about:"Objetivo: split e laço.",
+      examples:"-1 0 2 3 → 2",
+      patterns:[[ "input(","split(","for","in","float(","print(" ]],
+      tips:["converta e compare >0"],
+      solution:`nums=input("Números: ").split()
+maiores=0
+for t in nums:
+    if float(t)>0:
+        maiores+=1
+print("Maiores que zero:", maiores)`},
+
+    {tag:"min/max", q:"20) Leia números (por espaço) e imprima o menor e o maior.",
+      about:"Objetivo: min/max de lista.",
+      examples:"1 5 3 → min=1 max=5",
+      patterns:[[ "input(","split(","for","in","print(" ],[ "input(","split(","map(","float","min(","max(","print(" ]],
+      tips:["use map(float, ... )"],
+      solution:`nums=[float(x) for x in input("Números: ").split()]
+print("Menor:", min(nums))
+print("Maior:", max(nums))`},
+
+    {tag:"pares", q:"21) Some apenas os pares entre 1..n.",
+      about:"Objetivo: filtro e soma.",
+      examples:"n=6 → 2+4+6=12",
+      patterns:[[ "int(","for","range(","if","% 2","== 0","+=","print(" ]],
+      tips:["if i%2==0: soma+=i"],
+      solution:`n=int(input("Até: "))
+s=0
+for i in range(1,n+1):
+    if i%2==0:
+        s+=i
+print("Soma dos pares:", s)`},
+
+    {tag:"fibonacci", q:"22) Imprima os n primeiros números de Fibonacci (0,1...).",
+      about:"Objetivo: atualização múltipla.",
+      examples:"n=5 → 0 1 1 2 3",
+      patterns:[[ "int(","for","range(","print(" ]],
+      tips:["a,b = b, a+b"],
+      solution:`n=int(input("Qtde Fibonacci: "))
+a,b=0,1
+for _ in range(n):
+    print(a)
+    a,b=b,a+b`},
+
+    {tag:"strings", q:"23) Troque espaços por hífens em uma frase.",
+      about:"Objetivo: replace simples.",
+      examples:"\"a b c\" → \"a-b-c\"",
+      patterns:[[ "input(","replace(","print(" ]],
+      tips:["frase.replace(' ','-')"],
+      solution:`frase=input("Frase: ")
+print(frase.replace(" ","-"))`},
+
+    {tag:"sem len", q:"24) Tamanho de uma palavra sem usar len().",
+      about:"Objetivo: contagem em laço.",
+      examples:"\"abcd\" → 4",
+      patterns:[[ "input(","for","in","+=","print(" ]],
+      tips:["for _ in palavra: tam+=1"],
+      solution:`pal=input("Palavra: ")
+tam=0
+for _ in pal:
+    tam+=1
+print("Tamanho:", tam)`},
+
+    {tag:"while", q:"25) Leia vários números até digitar 'fim' e imprima a média.",
+      about:"Objetivo: laço com sentinela.",
+      examples:"2 4 fim → média 3",
+      patterns:[[ "while","input(","if","break","/","print(" ]],
+      tips:["converta e some até 'fim'"],
+      solution:`print("Digite números (ou 'fim'):")
+qtd=0; soma=0.0
+while True:
+    t=input("> ").strip().lower()
+    if t=="fim": break
+    soma+=float(t); qtd+=1
+print("Média:", (soma/qtd) if qtd else 0)`},
+
+    {tag:"menu", q:"26) Menu 1/2/3 e 0 para sair; leia opções até sair.",
+      about:"Objetivo: while + if/elif.",
+      examples:"1→'Oi', 2→'Tchau', 3→'42'",
+      patterns:[[ "while","!=","input(","if","elif","else","print(" ]],
+      tips:["repita até op==0"],
+      solution:`op=-1
+while op!=0:
+    print("\\n1) Oi\\n2) Tchau\\n3) Número favorito\\n0) Sair")
+    op=int(input("Opção: "))
+    if op==1: print("Oi!")
+    elif op==2: print("Tchau!")
+    elif op==3: print("Meu número favorito é 42.")
+    elif op==0: print("Até mais!")
+    else: print("Opção inválida!")`},
+
+    {tag:"palavras", q:"27) Conte quantas palavras há em uma frase (separe por espaços).",
+      about:"Objetivo: split e filtragem de vazios.",
+      examples:"\"um  dois\" → 2",
+      patterns:[[ "input(","split(","for","in","if","print(" ],[ "input(","split(","len(","print(" ]],
+      tips:["len([p for p in s.split(' ') if p])"],
+      solution:`frase=input("Frase: ").strip()
+palavras=[p for p in frase.split(" ") if p!=""]
+print("Quantidade de palavras:", len(palavras))`},
+
+    {tag:"continue", q:"28) Crie lista 1..n e imprima só ímpares (use continue).",
+      about:"Objetivo: controle de laço.",
+      examples:"n=5 → 1 3 5",
+      patterns:[[ "int(","for","range(","if","% 2","== 0","continue","print(" ]],
+      tips:["pule pares com continue"],
+      solution:`n=int(input("N: "))
+for i in range(1,n+1):
+    if i%2==0: continue
+    print(i)`},
+
+    {tag:"calendário", q:"29) Verifique se um ano é bissexto.",
+      about:"Objetivo: lógica booleana.",
+      examples:"2000→sim | 1900→não | 2024→sim",
+      patterns:[[ "int(","%","and","or","print(" ]],
+      tips:["(ano%400==0) or (ano%4==0 and ano%100!=0)"],
+      solution:`ano=int(input("Ano: "))
+b=(ano%400==0) or (ano%4==0 and ano%100!=0)
+print("Bissexto" if b else "Não bissexto")`},
+
+    {tag:"jogo", q:"30) Jogo do chute: número secreto 7; repita até acertar e conte tentativas.",
+      about:"Objetivo: laço + condicionais.",
+      examples:"palpites 3,6,7 → 3 tentativas",
+      patterns:[[ "while","True","input(","if","elif","else","print(" ]],
+      tips:["compare <, > e ==, e quebre ao acertar"],
+      solution:`segredo=7
+tent=0
+while True:
+    palpite=int(input("Seu palpite: "))
+    tent+=1
+    if palpite==segredo:
+        print("Acertou!", "Tentativas:", tent)
+        break
+    elif palpite<segredo: print("Maior...")
+    else: print("Menor...")`},
+  ];
+
+  let idx=0, score=0, streak=0, answers={};
+
+  function load(){ try{const s=JSON.parse(localStorage.getItem(KEY)||"{}"); if(s){idx=s.idx||0;score=s.score||0;streak=s.streak||0;answers=s.answers||{}}}catch{} }
+  function save(){ localStorage.setItem(KEY, JSON.stringify({idx,score,streak,answers})); }
+
+  function render(){
+    const c=XS[idx];
+    $("#tag").textContent=c.tag;
+    $("#idx").textContent=`Exercício ${idx+1} de ${XS.length}`;
+    $("#qText").textContent=c.q;
+    $("#aboutBox").textContent=c.about;
+    $("#examples").innerHTML = "<b>Exemplos:</b> " + c.examples;
+    $("#answer").value = (answers[idx] && answers[idx]!=="__OK__") ? answers[idx] : "";
+    $("#state").textContent="🤔";
+    $("#stateText").innerHTML="Escreva a solução e toque em <b>Verificar</b>.";
+    $("#hint").style.display="none";
+    $("#solution").style.display="none";
+    $("#hint").setAttribute("data-i","0");
+    $("#score").textContent=`Pontos: ${score}/${XS.length}`;
+    $("#streak").textContent=`Streak: ${streak}🔥`;
+    const done = Object.values(answers).filter(v=>v==="__OK__").length;
+    $("#bar").style.width = Math.round(100*done/XS.length) + "%";
+  }
+
+  function check(){
+    const c=XS[idx];
+    const userRaw = $("#answer").value || "";
+    const user = norm(userRaw);
+    if(!user){ $("#state").textContent="📝"; $("#stateText").textContent="Digite algo primeiro."; return; }
+    answers[idx] = userRaw;
+    const ok = anyPatternOK(user, c.patterns);
+    if(ok){
+      if(answers[idx] !== "__OK__"){ score++; streak++; answers[idx]="__OK__"; }
+      $("#state").textContent="✅";
+      $("#stateText").innerHTML='<span class="ok">Correto! 🎉</span>';
+    } else {
+      streak=0;
+      $("#state").textContent="❌";
+      $("#stateText").innerHTML='<span class="no">Ainda não. Ajuste a lógica/sintaxe e tente de novo.</span>';
+    }
+    $("#score").textContent=`Pontos: ${score}/${XS.length}`;
+    $("#streak").textContent=`Streak: ${streak}🔥`;
+    const done = Object.values(answers).filter(v=>v==="__OK__").length;
+    $("#bar").style.width = Math.round(100*done/XS.length) + "%";
+    save();
+  }
+
+  function hint(){
+    const c=XS[idx]; if(!c.tips || !c.tips.length) return;
+    const el=$("#hint"); let i=parseInt(el.getAttribute("data-i")||"0",10);
+    el.style.display="block"; el.textContent="Dica: " + c.tips[Math.min(i, c.tips.length-1)];
+    el.setAttribute("data-i", String(i+1));
+  }
+
+  function showSolution(){
+    const c=XS[idx]; const el=$("#solution");
+    el.style.display = el.style.display==="none" ? "block" : "none";
+    el.textContent = c.solution || "Sem solução cadastrada.";
+  }
+
+  function next(){ idx=(idx+1)%XS.length; render(); save(); }
+  function skip(){ streak=0; $("#streak").textContent=`Streak: ${streak}🔥`; next(); }
+  function resetAll(){ if(confirm("Deseja reiniciar e apagar o progresso?")){ idx=0;score=0;streak=0;answers={}; save(); render(); } }
+
+  $("#btnCheck").onclick=check;
+  $("#btnHint").onclick=hint;
+  $("#btnShow").onclick=showSolution;
+  $("#btnNext").onclick=next;
+  $("#btnSkip").onclick=skip;
+  $("#btnReset").onclick=resetAll;
+  $("#answer").addEventListener("keydown",e=>{ if((e.ctrlKey||e.metaKey)&&e.key==="Enter"){ e.preventDefault(); check(); } });
+
+  load(); render();
+})();
+</script>
+</body>
+</html>
+
