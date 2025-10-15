@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulação: Recadastro de Senha (Phishing)</title>
+    <style>
+        /* Estilos Base herdados para consistência */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8; 
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .screen-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            border-top: 8px solid #cc3333; /* Vermelho forte para alerta bancário */
+            text-align: center;
+        }
+        
+        /* Título do Jogo e da Missão */
+        h1 {
+            color: #0056b3;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        h2 {
+            color: #cc3333;
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+        
+        /* Estilos do Email Simulado */
+        .simulacao-email {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #ffffff;
+            text-align: left;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .header-email {
+            padding: 10px 0;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 15px;
+        }
+        .icon {
+            font-size: 1.8em;
+            margin-right: 10px;
+            color: #cc3333; /* Ícone de Alerta */
+        }
+        .origem {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #333;
+            display: inline-block;
+        }
+        .phish-clue {
+            color: #d9534f;
+            font-size: 0.8em;
+            font-weight: normal;
+            display: block;
+            margin-top: 3px;
+        }
+        .assunto {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #cc3333;
+            margin-top: 10px;
+        }
+        .conteudo {
+            line-height: 1.6;
+            margin-top: 20px;
+            font-size: 1em;
+        }
+        .destaque-perigo {
+            color: #cc3333;
+            font-weight: bold;
+        }
+        .link-falso {
+            display: block;
+            text-align: center;
+            margin: 25px 0;
+        }
+        .link-falso a {
+            background-color: #cc3333;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .alerta-phish {
+            margin-top: 30px;
+            background-color: #fce8e8;
+            color: #a04040;
+            padding: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            border: 1px dashed #d9534f;
+        }
+        .opcoes-voto {
+            margin-top: 30px;
+        }
+        .opcoes-voto p {
+            font-weight: bold;
+            font-size: 1.6em;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="caso-recadastro-senha" class="screen-container">
+        <h1>DETECTIVES DIGITAIS</h1>
+        <h2>FATO OU PHISHING? (O Alerta Bancário)</h2>
+
+        <div class="simulacao-email">
+            <div class="header-email">
+                <span class="icon">⚠️</span>
+                <div style="display: inline-block; vertical-align: top;">
+                    <div class="origem">Segurança da Carteira Digital</div>
+                    <div class="phish-clue">enviado de: <span style="font-weight: bold;">suporte-banco@seguranca012.com</span></div>
+                </div>
+                <div class="assunto">Aviso de Segurança: Atividade Não Autorizada em Sua Conta</div>
+            </div>
+            
+            <div class="conteudo">
+                <p>Prezado Cliente,</p>
+                
+                <p>Notamos um acesso de um dispositivo não reconhecido à sua Carteira Digital. Seu acesso foi temporariamente bloqueado como medida de segurança imediata.</p>
+                
+                <p>Para garantir que apenas você tenha o controle, pedimos que redefina sua senha. Você precisará digitar sua <span class="destaque-perigo">senha antiga</span> e criar uma nova no formulário que se abrirá.</p>
+                
+                <p>Clique no link abaixo para realizar a redefinição de forma <span class="destaque-perigo">urgente</span>:</p>
+                
+                <div class="link-falso">
+                    <a href="#" onclick="return false;">REDEFINIR MINHA SENHA AGORA</a>
+                </div>
+                
+                <p style="font-size: 0.9em; color: #777;">*Esta é uma mensagem automática. Por favor, não responda este e-mail.</p>
+            </div>
+        </div>
+
+        <div class="alerta-phish">
+            **Isca Principal:** O domínio de e-mail é genérico/estranho (seguranca012.com) e a instituição está pedindo para o cliente **digitar a senha antiga** em um link externo.
+        </div>
+        
+        <div class="opcoes-voto">
+            <p>VOTE AGORA! PHISH (É golpe) | LEGIT (É verdadeiro)</p>
+        </div>
+    </div>
+
+</body>
+</html>
