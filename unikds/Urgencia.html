@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detectives Digitais: A Caça ao Phish</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8; /* Fundo claro */
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .screen-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border-top: 5px solid #0056b3; /* Cor Unico/Unikids (simulada) */
+            display: none; /* Inicia oculto, para você mostrar um por vez */
+        }
+        .screen-container.active {
+            display: block;
+        }
+        h1 {
+            color: #d9534f; /* Cor de alerta para o título da missão */
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        .simulacao {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            background-color: #fafafa;
+        }
+        .header-simulacao {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        .icon {
+            font-size: 2em;
+            margin-right: 15px;
+            color: #5cb85c; /* Cor para ícones */
+        }
+        .origem {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #0056b3;
+        }
+        .assunto {
+            font-style: italic;
+            color: #555;
+            margin-top: 5px;
+        }
+        .conteudo {
+            line-height: 1.6;
+            margin-top: 15px;
+        }
+        .link-falso {
+            color: #d9534f; /* Cor de link suspeito */
+            text-decoration: underline;
+            cursor: pointer;
+            word-break: break-all;
+        }
+        .alerta {
+            background-color: #f2dede;
+            color: #a94442;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .opcoes-voto {
+            text-align: center;
+            margin-top: 25px;
+        }
+        .opcoes-voto p {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="caso-1" class="screen-container active">
+        <h1>MISSAO 1/4: Urgência do Jogo</h1>
+        <div class="simulacao">
+            <div class="header-simulacao">
+                <span class="icon">🎮</span>
+                <div>
+                    <div class="origem">Suporte ao Jogador - GameMaster</div>
+                    <div class="assunto">ALERTA DE SEGURANÇA: Sua conta será suspensa em 2 horas!</div>
+                </div>
+            </div>
+            <div class="conteudo">
+                <p>Olá, Jogador!</p>
+                <p>Nossos sistemas detectaram uma atividade de login incomum em sua conta GameMaster. Para proteger seus valiosos *itens e skins* raros, sua conta será **automaticamente suspensa em 2 horas** se nenhuma ação for tomada.</p>
+                <p>Clique no link abaixo **IMEDIATAMENTE** para verificar seu login e evitar a perda de todo o seu progresso no jogo:</p>
+                <p class="link-falso">CLIQUE AQUI: <a href="#" onclick="return false;" class="link-falso">http://gamemaster-suporte.verificacao-agora.net/login</a></p>
+                <p>Se você ignorar esta mensagem, todos os seus ativos digitais serão bloqueados. Aja rápido!</p>
+            </div>
+            <div class="alerta">**Isca Principal: Urgência e Ameaça de Perda de Itens Valiosos**</div>
+        </div>
+        <div class="opcoes-voto">
+            <p>E aí, Detectives? O que votam?</p>
+            <p>PHISH (É golpe) | LEGIT (É verdadeiro)</p>
+        </div>
+    </div>
+    
+    <div id="caso-2" class="screen-container">
+        <h1>MISSAO 2/4: O Falso Prêmio</h1>
+        <div class="simulacao">
+            <div class="header-simulacao">
+                <span class="icon">🎁</span>
+                <div>
+                    <div class="origem">Promoções Especiais <span style="color:#d9534f; font-weight:normal;">(enviado de premios.exclusivos@sorteio-unikids.xyz)</span></div>
+                    <div class="assunto">PARABÉNS! Você ganhou um IPHONE 16 PRO MAX!</div>
+                </div>
+            </div>
+            <div class="conteudo">
+                <p>Prezado Cliente Unikids,</p>
+                <p>Nós da equipe de promoções temos o prazer de anunciar que você foi o sorteado de hoje!</p>
+                <p>Você acaba de ganhar um **iPhone 16 Pro Max** totalmente de graça!</p>
+                <p>Para que o seu super prêmio seja enviado, basta você **preencher o formulário** abaixo com seu endereço completo e realizar o pagamento de uma **pequena taxa de frete de R$ 35,90**.</p>
+                <p class="link-falso">Resgate seu prêmio AGORA: <a href="#" onclick="return false;" class="link-falso">http://resgate-premios-unicokids.com/formulario-vip</a></p>
+                <p>Oferta válida apenas nas próximas 24 horas.</p>
+            </div>
+            <div class="alerta">**Isca Principal: Prêmio Inesperado e Pedido de Pequeno Pagamento/Dados**</div>
+        </div>
+        <div class="opcoes-voto">
+            <p>E aí, Detectives? O que votam?</p>
+            <p>PHISH (É golpe) | LEGIT (É verdadeiro)</p>
+        </div>
+    </div>
+
+    <div id="caso-3" class="screen-container">
+        <h1>MISSAO 3/4: Recadastro Suspeito</h1>
+        <div class="simulacao">
+            <div class="header-simulacao">
+                <span class="icon">🏦</span>
+                <div>
+                    <div class="origem">Segurança da Carteira Digital <span style="color:#d9534f; font-weight:normal;">(enviado de alerta.seg@banco-digit-suporte.com)</span></div>
+                    <div class="assunto">Aviso de Segurança: Atividade Não Autorizada em Sua Conta</div>
+                </div>
+            </div>
+            <div class="conteudo">
+                <p>Prezado Cliente,</p>
+                <p>Detectamos um acesso de um dispositivo não reconhecido à sua conta da Carteira Digital nesta madrugada. Seu acesso foi temporariamente bloqueado como medida de segurança.</p>
+                <p>Para desbloquear e redefinir sua senha com urgência, clique no link abaixo. Você precisará digitar sua senha antiga e uma nova para confirmar sua identidade.</p>
+                <p class="link-falso">Redefinir Agora: <a href="#" onclick="return false;" class="link-falso">http://digit-seguranca.reset-senha-oficial.net</a></p>
+                <p>Agradecemos a sua colaboração.</p>
+            </div>
+            <div class="alerta">**Isca Principal: Endereço de Email Estranho e Pedido de Credenciais (Senha Antiga)**</div>
+        </div>
+        <div class="opcoes-voto">
+            <p>E aí, Detectives? O que votam?</p>
+            <p>PHISH (É golpe) | LEGIT (É verdadeiro)</p>
+        </div>
+    </div>
+    
+    <div id="caso-4" class="screen-container">
+        <h1>MISSAO 4/4: Pesquisa de Influencer</h1>
+        <div class="simulacao">
+            <div class="header-simulacao">
+                <span class="icon">📱</span>
+                <div>
+                    <div class="origem">Direct Message - @MarcaCool_Official_BR <span style="color:#d9534f; font-weight:normal;">(Perfil com 500 seguidores)</span></div>
+                    <div class="assunto">Urgente: Patrocínio Exclusivo para Você!</div>
+                </div>
+            </div>
+            <div class="conteudo">
+                <p>Olá! Seu perfil é SUPER interessante e estamos montando uma campanha. Queremos te patrocinar!</p>
+                <p>Para validarmos o patrocínio, responda estas 3 perguntas simples (idade, cidade, jogos favoritos) e nos envie **seu número de celular e o email de login do seu jogo principal** para contato exclusivo.</p>
+                <p>Seus dados são 100% confidenciais e vamos te mandar um código de verificação para começarmos a parceria.</p>
+                <p>**MarcaCool** adora seus seguidores!</p>
+            </div>
+            <div class="alerta">**Isca Principal: Oferta Irrecusável e Solicitação de Dados de Contato/Login**</div>
+        </div>
+        <div class="opcoes-voto">
+            <p>E aí, Detectives? O que votam?</p>
+            <p>PHISH (É golpe) | LEGIT (É verdadeiro)</p>
+        </div>
+    </div>
+
+</body>
+</html>
