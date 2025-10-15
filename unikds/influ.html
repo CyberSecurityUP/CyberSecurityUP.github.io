@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulação: Patrocínio Falso (DM de Instagram)</title>
+    <style>
+        /* Estilos Base */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5; /* Fundo mais claro, estilo redes sociais */
+            color: #262626; /* Cor de texto padrão do Instagram */
+            margin: 0;
+            padding: 20px;
+        }
+        .screen-container {
+            max-width: 600px; /* Mais estreito, como tela de celular */
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 12px; /* Cantos mais arredondados */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border-top: 5px solid #E1306C; /* Cor vibrante do Instagram */
+            text-align: center;
+        }
+        
+        /* Título do Jogo e da Missão */
+        h1 {
+            color: #3f729b; /* Azul Instagram */
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+        h2 {
+            color: #E1306C; /* Rosa Instagram */
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+        
+        /* Estilos da DM do Instagram */
+        .instagram-dm-box {
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            background-color: #ffffff;
+            padding: 20px;
+            text-align: left;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        .dm-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #efefef;
+        }
+        .profile-pic {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: #efefef; /* Placeholder */
+            margin-right: 15px;
+            border: 2px solid #E1306C; /* Borda estilo stories */
+        }
+        .username {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #262626;
+        }
+        .username .verified-badge {
+            color: #3897f0; /* Azul de verificação */
+            font-size: 0.8em;
+            margin-left: 5px;
+        }
+        .dm-time {
+            font-size: 0.8em;
+            color: #8e8e8e;
+            margin-top: 3px;
+        }
+
+        .message-bubble {
+            background-color: #efefef; /* Cor do balão de mensagem */
+            border-radius: 18px; /* Mais arredondado */
+            padding: 12px 18px;
+            margin-bottom: 10px;
+            line-height: 1.5;
+            word-wrap: break-word; /* Quebra palavras longas */
+        }
+        .message-bubble.from-you {
+            background-color: #e6f7ff; /* Cor para "você" */
+            align-self: flex-end; /* Mensagem para a direita */
+            margin-left: auto; /* Alinha à direita */
+            border-bottom-right-radius: 4px; /* Ponta triangular */
+        }
+        .message-bubble p:last-child {
+            margin-bottom: 0;
+        }
+        .message-content strong {
+            color: #262626;
+        }
+        .message-content span.highlight {
+            color: #E1306C; /* Destaque em rosa */
+            font-weight: bold;
+        }
+
+        .phish-clue-dm {
+            font-size: 0.85em;
+            color: #d9534f; /* Cor de alerta */
+            background-color: #ffe0e0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 20px;
+            text-align: left;
+            border: 1px solid #d9534f;
+            display: flex;
+            align-items: center;
+        }
+        .phish-clue-dm .icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+            color: #d9534f;
+        }
+
+        .alerta-phish {
+            margin-top: 30px;
+            background-color: #fce8e8;
+            color: #a04040;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            border: 1px dashed #d9534f;
+        }
+        .opcoes-voto {
+            margin-top: 30px;
+        }
+        .opcoes-voto p {
+            font-weight: bold;
+            font-size: 1.6em;
+            color: #262626;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="caso-patrocinio-falso" class="screen-container">
+        <h1>DETECTIVES DIGITAIS</h1>
+        <h2>FATO OU PHISHING? (DM do Influencer)</h2>
+
+        <div class="instagram-dm-box">
+            <div class="dm-header">
+                <div class="profile-pic" style="background-image: url('https://via.placeholder.com/45/E1306C/FFFFFF?text=MC'); background-size: cover;"></div> 
+                <div>
+                    <div class="username">
+                        MarcaCool_Official_BR
+                        <span class="verified-badge">✔️</span> 
+                    </div>
+                    <div class="dm-time">Ativo(a) há 10min</div>
+                </div>
+            </div>
+            
+            <div class="message-content">
+                <div class="message-bubble">
+                    <p>Olá! Tudo bem?👋</p>
+                </div>
+                <div class="message-bubble">
+                    <p>Vimos seu perfil e achamos SUPER interessante! ✨</p>
+                </div>
+                <div class="message-bubble">
+                    <p>Estamos selecionando jovens talentos para uma <span class="highlight">parceria exclusiva</span> com a MarcaCool. Queremos te <span class="highlight">patrocinar</span>!</p>
+                </div>
+                <div class="message-bubble">
+                    <p>Para começarmos, precisamos de algumas infos:</p>
+                    <ol style="padding-left: 20px; margin-top: 10px;">
+                        <li>Qual sua idade, cidade e seus 3 jogos favoritos?</li>
+                        <li>Poderia nos enviar seu <span class="highlight">número de celular</span> e o <span class="highlight">e-mail de login</span> da sua plataforma de jogos principal?</li>
+                    </ol>
+                </div>
+                 <div class="message-bubble">
+                    <p>Seus dados são 100% confidenciais! Depois disso, mandaremos um código de verificação para seu celular e começamos a parceria! 🚀</p>
+                </div>
+                <div class="dm-time" style="text-align: right; margin-top: 10px;">Enviado há 2min</div>
+            </div>
+        </div>
+
+        <div class="phish-clue-dm">
+            <span class="icon">🔍</span>
+            <div>
+                <p style="margin:0;">**Fique Atento:** Perfil com poucos seguidores e criado recentemente.</p>
+                <p style="margin:5px 0 0 0;">Solicitação de <span style="font-weight: bold;">número de celular e e-mail de login</span> (dados sensíveis) para um suposto patrocínio.</p>
+            </div>
+        </div>
+        
+        <div class="alerta-phish">
+            **Isca Principal:** Oferta incrível e inesperada para atrair a vítima, seguida da solicitação de dados pessoais e de acesso.
+        </div>
+        
+        <div class="opcoes-voto">
+            <p>VOTE AGORA! PHISH
