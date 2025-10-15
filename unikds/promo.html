@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulação: Falso Prêmio (Phishing)</title>
+    <style>
+        /* Estilos Base */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8; 
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .screen-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            border-top: 8px solid #d9534f; /* Vermelho: Cor de Atenção/Alerta */
+            text-align: center;
+        }
+        
+        /* Título do Jogo e da Missão */
+        h1 {
+            color: #0056b3;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        h2 {
+            color: #d9534f;
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+        
+        /* Estilos do Email Simulado */
+        .simulacao-email {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #ffffff;
+            text-align: left;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .header-email {
+            padding: 10px 0;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 15px;
+        }
+        .icon {
+            font-size: 1.8em;
+            margin-right: 10px;
+            color: #5cb85c;
+        }
+        .origem {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #0056b3;
+            display: inline-block;
+        }
+        .phish-clue {
+            color: #d9534f;
+            font-size: 0.8em;
+            font-weight: normal;
+            display: block;
+            margin-top: 3px;
+        }
+        .assunto {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #d9534f;
+            margin-top: 10px;
+        }
+        .conteudo {
+            line-height: 1.6;
+            margin-top: 20px;
+            font-size: 1em;
+        }
+        .destaque {
+            color: #0056b3;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .taxa {
+            color: #d9534f;
+            font-weight: bold;
+            background-color: #fce8e8;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        .link-falso {
+            display: block;
+            text-align: center;
+            margin: 25px 0;
+        }
+        .link-falso a {
+            background-color: #5cb85c;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .alerta-phish {
+            margin-top: 30px;
+            background-color: #fff0b3;
+            color: #997300;
+            padding: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            border: 1px dashed #ffd54f;
+        }
+        .opcoes-voto {
+            margin-top: 30px;
+        }
+        .opcoes-voto p {
+            font-weight: bold;
+            font-size: 1.6em;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="caso-falso-premio" class="screen-container">
+        <h1>DETECTIVES DIGITAIS</h1>
+        <h2>FATO OU PHISHING? (O Falso Prêmio)</h2>
+
+        <div class="simulacao-email">
+            <div class="header-email">
+                <span class="icon">📧</span>
+                <div style="display: inline-block; vertical-align: top;">
+                    <div class="origem">Promoções Especiais Unikids</div>
+                    <div class="phish-clue">enviado de: <span style="font-weight: bold;">premios.exclusivos@sorteio-unikids.xyz</span></div>
+                </div>
+                <div class="assunto">PARABÉNS! Você ganhou um IPHONE 16 PRO MAX!</div>
+            </div>
+            
+            <div class="conteudo">
+                <p>Prezado Cliente Unikids,</p>
+                
+                <p>Que alegria! Você foi selecionado aleatoriamente como o **1.000.000º visitante** da nossa página e ganhou um <span class="destaque">iPhone 16 Pro Max</span> novinho!</p>
+                
+                <p>Para que o seu super prêmio seja enviado, solicitamos que preencha o formulário de entrega e realize o pagamento de um <span class="taxa">pequeno valor de frete de R$ 35,90</span>. Esta é a única exigência para liberar o seu presente!</p>
+                
+                <p>Clique no botão abaixo **IMEDIATAMENTE** para garantir o seu resgate:</p>
+                
+                <div class="link-falso">
+                    <a href="#" onclick="return false;">RESGATAR MEU IPHONE AGORA</a>
+                </div>
+                
+                <p style="font-size: 0.9em; color: #777;">**Atenção:** Oferta de frete válida apenas nas próximas 24 horas. Não perca!</p>
+            </div>
+        </div>
+
+        <div class="alerta-phish">
+            **Isca Principal:** Promessa de um prêmio de alto valor sem participação, combinada com a solicitação de um "pequeno" pagamento.
+        </div>
+        
+        <div class="opcoes-voto">
+            <p>VOTE AGORA! PHISH (É golpe) | LEGIT (É verdadeiro)</p>
+        </div>
+    </div>
+
+</body>
+</html>
