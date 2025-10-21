@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cybersecurity Career Quiz (30 Questions)</title>
+<style>
+  :root{
+    --bg:#0b0f14;
+    --panel:#121823;
+    --soft:#1a2230;
+    --accent:#7c5cff;
+    --accent-2:#2dd4bf;
+    --text:#e6eef8;
+    --muted:#9fb3c8;
+    --bad:#ef4444;
+    --good:#22c55e;
+    --maybe:#f59e0b;
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Inter", "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+    background: radial-gradient(1200px 800px at 20% -10%, #1b2640 0%, transparent 60%),
+                radial-gradient(1000px 700px at 120% 120%, #1a2d3f 0%, transparent 60%),
+                var(--bg);
+    color:var(--text);
+    line-height:1.5;
+  }
+
+  .wrap{
+    max-width:1000px;
+    margin:40px auto 120px;
+    padding:24px;
+  }
+
+  header.hero{
+    background:linear-gradient(180deg, rgba(124,92,255,0.15), rgba(45,212,191,0.08));
+    border:1px solid rgba(124,92,255,0.25);
+    border-radius:var(--radius);
+    padding:28px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.25), inset 0 0 0 1px rgba(255,255,255,0.03);
+    position:relative;
+    overflow:hidden;
+  }
+  .hero h1{
+    margin:0 0 6px;
+    font-size:clamp(24px, 3.4vw, 40px);
+    letter-spacing:.3px;
+  }
+  .hero p{
+    margin:6px 0 0;
+    color:var(--muted);
+  }
+  .pill{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:6px 12px;
+    border-radius:999px;
+    background:rgba(45,212,191,0.1);
+    border:1px solid rgba(45,212,191,0.3);
+    color:var(--accent-2);
+    font-size:12px;
+    margin-bottom:10px;
+  }
+
+  .card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border:1px solid rgba(124,92,255,0.18);
+    border-radius:var(--radius);
+    padding:18px;
+    margin:16px 0;
+    box-shadow: 0 8px 20px rgba(0,0,0,.25);
+  }
+
+  .progress{
+    height:12px; border-radius:999px; background:#0d1420; overflow:hidden; border:1px solid #263042;
+    margin:8px 0 0;
+  }
+  .progress > div{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg, var(--accent), var(--accent-2));
+  }
+
+  .q{
+    display:grid; gap:12px;
+    grid-template-columns: 1fr auto;
+    align-items:center;
+    padding:14px 16px;
+    border-radius:12px;
+    background:var(--panel);
+    border:1px solid #1f2a3a;
+  }
+  .q:not(:last-child){margin-bottom:12px;}
+  .q h3{
+    margin:0; font-size:16px; font-weight:600;
+  }
+  .answers{
+    display:flex; gap:8px; align-items:center; justify-content:flex-end;
+  }
+  .answers label{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--soft);
+    border:1px solid #263042;
+    padding:8px 12px;
+    border-radius:999px;
+    cursor:pointer; user-select:none;
+    font-weight:600; font-size:13px; color:#d8e6ff;
+    transition: transform .08s ease, background .2s ease, border-color .2s ease;
+  }
+  .answers input{display:none}
+  .answers input:checked + span{opacity:1}
+  .answers label[data-val="yes"]{border-color:rgba(34,197,94,.35)}
+  .answers label[data-val="maybe"]{border-color:rgba(245,158,11,.35)}
+  .answers label[data-val="no"]{border-color:rgba(239,68,68,.35)}
+  .answers label.active{box-shadow:0 0 0 2px rgba(124,92,255,.4) inset; transform:translateY(-1px)}
+  .answers small{opacity:.75}
+
+  .sticky{
+    position:sticky; bottom:12px; z-index:5;
+    display:flex; gap:10px; align-items:center; justify-content:space-between;
+    padding:12px; background:rgba(10, 15, 22, .7); backdrop-filter: blur(8px);
+    border:1px solid #203047; border-radius:14px;
+    margin-top:16px;
+  }
+  .btn{
+    appearance:none; border:0; cursor:pointer;
+    padding:12px 16px; border-radius:12px;
+    font-weight:700; letter-spacing:.3px;
+    color:white; background:linear-gradient(90deg, var(--accent), #5aa7fa);
+    box-shadow: 0 8px 18px rgba(124,92,255,.35);
+  }
+  .btn.secondary{
+    background:#1f2a3a; color:#dbeafe; border:1px solid #2a3a54; box-shadow:none;
+  }
+  .btn.ghost{
+    background:transparent; color:#bcd3f2; border:1px dashed #2a3a54;
+  }
+
+  .results{
+    display:none; margin-top:18px;
+  }
+  .results.active{display:block;}
+  .badge{
+    display:inline-block; padding:6px 10px; border-radius:999px;
+    font-size:12px; font-weight:700; letter-spacing:.3px;
+    background:rgba(124,92,255,.15); border:1px solid rgba(124,92,255,.35); color:#dbeafe;
+  }
+  .bars{display:grid; gap:10px; margin-top:10px}
+  .bar{
+    display:grid; grid-template-columns: 180px 1fr auto; gap:12px; align-items:center;
+    background:var(--panel); border:1px solid #263042; border-radius:10px; padding:8px 10px;
+  }
+  .bar .track{height:10px; background:#0e1624; border-radius:999px; overflow:hidden; border:1px solid #263042}
+  .bar .fill{height:100%; width:0%; background:linear-gradient(90deg, var(--accent), var(--accent-2))}
+  .bar .pct{min-width:54px; text-align:right; font-variant-numeric: tabular-nums; color:#cfe6ff}
+  .areas-grid{display:grid; gap:14px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin-top:14px}
+  .area-card{background:var(--panel); border:1px solid #2a3953; border-radius:14px; padding:14px}
+  .area-card h4{margin:0 0 4px}
+  .why{color:var(--muted); font-size:13px; margin-top:8px}
+  .warn{color:#ffd7d7}
+  .muted{color:var(--muted)}
+  .hr{height:1px; background:#203047; margin:14px 0}
+
+  /* new: quick highlight for the first unanswered */
+  .highlight-missing{
+    box-shadow: 0 0 0 2px rgba(239,68,68,.7), 0 0 20px rgba(239,68,68,.25) inset;
+    transition: box-shadow .4s ease;
+  }
+
+  @media (max-width:680px){
+    .q{grid-template-columns:1fr}
+    .bar{grid-template-columns:1fr; align-items:start}
+    .bar .pct{text-align:left}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <span class="pill">Beginner-friendly • 10–12 min • Yes / Maybe / No</span>
+      <h1>Cybersecurity Career Quiz</h1>
+      <p>Answer 30 short questions to discover which security areas fit you best. Mark <strong>Yes</strong>, <strong>Maybe</strong>, or <strong>No</strong>. Your top matches and a short profile will appear at the end.</p>
+      <div class="progress" aria-hidden="true" title="Progress">
+        <div id="progressFill"></div>
+      </div>
+    </header>
+
+    <section id="quiz" class="card">
+      <!-- Questions will be injected here -->
+    </section>
+
+    <div class="sticky">
+      <div><span id="answeredCount">0</span>/30 answered</div>
+      <div style="display:flex; gap:10px">
+        <button class="btn ghost" id="saveBtn" type="button">Save Progress</button>
+        <button class="btn secondary" id="resetBtn" type="button">Reset</button>
+        <button class="btn" id="submitBtn" type="button">See My Results</button>
+      </div>
+    </div>
+
+    <section id="results" class="results">
+      <div class="card">
+        <div style="display:flex; gap:12px; align-items:center; justify-content:space-between;">
+          <h2 style="margin:0;">Your Matches</h2>
+          <span class="badge" id="summaryBadge">Top 3 recommendations</span>
+        </div>
+        <div class="bars" id="bars"></div>
+        <div class="hr"></div>
+        <div class="areas-grid" id="topAreas"></div>
+        <div class="hr"></div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap">
+          <button class="btn secondary" id="copyBtn" type="button">Copy Summary</button>
+          <button class="btn ghost" id="printBtn" type="button">Print / Save PDF</button>
+          <span class="muted">Tip: keep exploring the #2 and #3 as “secondary paths”.</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+<script>
+/* ===========================
+   CONFIG: AREAS & QUESTIONS
+   =========================== */
+const AREAS = {
+  appsec_devsecops: {
+    name: "Application Security & DevSecOps",
+    blurb: "You like building safer software and automating security across SDLC and CI/CD. You’ll partner with dev teams and ship guardrails.",
+    steps: ["Learn HTTP, OWASP Top 10, Git.", "Practice SAST/DAST & IaC scanning.", "Build a CI job that fails on critical vulns."]
+  },
+  ai_security: {
+    name: "AI Security Engineer",
+    blurb: "You’re curious about model/data risks and how to secure AI systems (prompt injection, data leakage, model abuse).",
+    steps: ["Review AI threat models & evals.", "Harden inputs/outputs, logging & guardrails.", "Run red-teaming on LLM apps."]
+  },
+  data_science_sec: {
+    name: "Cyber Security Data Science Analyst",
+    blurb: "You enjoy working with data, turning logs into detections and insights that reduce risk.",
+    steps: ["Learn Python & SQL basics.", "Practice with open SIEM datasets.", "Prototype a detection and measure precision/recall."]
+  },
+  incident_response: {
+    name: "Incident Response Analyst",
+    blurb: "You can handle pressure and love turning chaos into timelines, containment, and lessons learned.",
+    steps: ["Study IR playbooks & triage.", "Practice with DFIR labs.", "Run a tabletop and write the after-action report."]
+  },
+  grc: {
+    name: "GRC Analyst",
+    blurb: "You like policies, risk and controls, translating security into business value and compliance.",
+    steps: ["Learn risk frameworks (ISO/NIST).", "Map controls to risks.", "Draft a policy and a control test plan."]
+  },
+  awareness: {
+    name: "Security Awareness Analyst",
+    blurb: "You enjoy teaching and shaping behavior with engaging security programs.",
+    steps: ["Design a phishing simulation.", "Create a 60-sec micro-training.", "Measure behavior change with metrics."]
+  },
+  red_team: {
+    name: "Offensive Security / Red Team",
+    blurb: "Ethical hacking excites you—proving impact through realistic attack paths.",
+    steps: ["Learn web vulns & AD basics.", "Do CTFs/labs regularly.", "Document findings with clear risk."]
+  },
+  cloud_sec: {
+    name: "Cloud Security Analyst",
+    blurb: "You want to secure AWS/Azure/GCP accounts, networks and services with cloud-native tools.",
+    steps: ["Learn IAM, VPC, KMS, logging.", "Scan IaC templates for misconfig.", "Build guardrails with CSPM & policies."]
+  },
+  threat_intel: {
+    name: "Threat Intelligence / Threat Hunting",
+    blurb: "You love tracking adversaries (TTPs) and forming hypotheses to hunt across data.",
+    steps: ["Study MITRE ATT&CK.", "Write 2 hunting hypotheses.", "Publish a short intel note with IOCs."]
+  },
+  web3: {
+    name: "Web3 Security Analyst",
+    blurb: "You’re curious about smart contracts and blockchain security risks.",
+    steps: ["Learn Solidity basics.", "Audit common Web3 pitfalls.", "Break & fix a simple contract locally."]
+  },
+  quantum_sec: {
+    name: "Quantum Computer Security Engineer",
+    blurb: "You’re drawn to post-quantum cryptography, crypto-agility, and research-grade problems.",
+    steps: ["Study PQC suites (NIST).", "Prototype TLS with PQC hybrids.", "Assess crypto inventory for migration."]
+  },
+  soc_forensics: {
+    name: "SOC Analyst / Forensics",
+    blurb: "You enjoy monitoring, escalation and artifact analysis that underpin rapid response.",
+    steps: ["Learn SIEM queries.", "Do memory/disk labs.", "Build a triage runbook."]
+  },
+  iam: {
+    name: "IAM Analyst",
+    blurb: "You like solving access puzzles: SSO, MFA, least privilege and lifecycle automation.",
+    steps: ["Map joiner/mover/leaver flows.", "Harden SSO & MFA policies.", "Design RBAC/ABAC for an app."]
+  },
+  security_arch: {
+    name: "Security Architect",
+    blurb: "You want to design secure systems end-to-end, do threat modeling and set standards.",
+    steps: ["Model threats for a feature.", "Select patterns & controls.", "Publish a reference architecture."]
+  },
+  ot_ics_iot: {
+    name: "OT/ICS/IoT Security",
+    blurb: "You’re interested in protecting industrial/embedded systems where safety and uptime matter.",
+    steps: ["Learn ICS basics & protocols.", "Segment networks and assets.", "Practice secure device hardening."]
+  }
+};
+
+// 30 questions (2 per area), simple mapping: Yes=1, Maybe=0.5, No=0
+const QUESTIONS = [
+  { id:1,  text:"I enjoy understanding how web apps and APIs are built and where they can break.", areas:["appsec_devsecops"] },
+  { id:2,  text:"I’d like to automate security checks in CI/CD pipelines (SAST/DAST/IaC).", areas:["appsec_devsecops"] },
+
+  { id:3,  text:"I’m curious about securing AI/ML models and datasets (prompt injection, data leakage).", areas:["ai_security"] },
+  { id:4,  text:"I’m comfortable experimenting with Python notebooks and model evaluation.", areas:["ai_security"] },
+
+  { id:5,  text:"I like working with data: queries, statistics, and finding patterns.", areas:["data_science_sec"] },
+  { id:6,  text:"I’d enjoy building detections based on data and testing their effectiveness.", areas:["data_science_sec"] },
+
+  { id:7,  text:"I can handle on-call pressure and triage alerts during incidents.", areas:["incident_response"] },
+  { id:8,  text:"I like reconstructing timelines and root causes after a breach.", areas:["incident_response"] },
+
+  { id:9,  text:"I like creating policies, assessing risk, and mapping controls to frameworks.", areas:["grc"] },
+  { id:10, text:"Explaining security trade-offs to non-technical stakeholders sounds appealing.", areas:["grc"] },
+
+  { id:11, text:"I enjoy teaching people and crafting clear, engaging security tips.", areas:["awareness"] },
+  { id:12, text:"I’d like to design campaigns that change behavior (phishing tests, training).", areas:["awareness"] },
+
+  { id:13, text:"I’m excited by ethical hacking: breaking in to prove impact.", areas:["red_team"] },
+  { id:14, text:"I’d like to learn exploit techniques, from web vulns to Active Directory attacks.", areas:["red_team"] },
+
+  { id:15, text:"I want to secure AWS/Azure/GCP accounts, networks, and services.", areas:["cloud_sec"] },
+  { id:16, text:"Infrastructure as Code and cloud-native tooling interest me.", areas:["cloud_sec"] },
+
+  { id:17, text:"I like following threat actors (TTPs) and building hunting hypotheses.", areas:["threat_intel"] },
+  { id:18, text:"Pivoting through logs/OSINT to connect dots sounds fun.", areas:["threat_intel"] },
+
+  { id:19, text:"I’m curious about smart contracts and blockchain security.", areas:["web3"] },
+  { id:20, text:"I’d like to analyze Solidity code and common Web3 pitfalls.", areas:["web3"] },
+
+  { id:21, text:"Post-quantum cryptography and crypto-agility interest me.", areas:["quantum_sec"] },
+  { id:22, text:"I’m comfortable with math-heavy topics and reading research papers.", areas:["quantum_sec"] },
+
+  { id:23, text:"I’d enjoy monitoring SIEM dashboards and escalating suspicious activity.", areas:["soc_forensics"] },
+  { id:24, text:"Disk/memory forensics and artifact analysis sound interesting.", areas:["soc_forensics"] },
+
+  { id:25, text:"I like solving identity problems: SSO, MFA, least privilege.", areas:["iam"] },
+  { id:26, text:"Designing and reviewing access policies appeals to me.", areas:["iam"] },
+
+  { id:27, text:"I want to design secure systems end-to-end and do threat modeling.", areas:["security_arch"] },
+  { id:28, text:"I enjoy choosing security patterns and standards for teams to follow.", areas:["security_arch"] },
+
+  { id:29, text:"I’m interested in securing industrial systems, sensors, and embedded devices.", areas:["ot_ics_iot"] },
+  { id:30, text:"I don’t mind working with physical devices and safety-critical environments.", areas:["ot_ics_iot"] },
+];
+
+/* ===========================
+   RENDER QUIZ
+   =========================== */
+const quizEl = document.getElementById('quiz');
+const progressFill = document.getElementById('progressFill');
+const answeredCountEl = document.getElementById('answeredCount');
+
+function renderQuiz(){
+  const frag = document.createDocumentFragment();
+  QUESTIONS.forEach(q => {
+    const row = document.createElement('div');
+    row.className = 'q';
+    row.innerHTML = `
+      <div>
+        <h3>Q${q.id}. ${q.text}</h3>
+        <div class="muted" style="font-size:12px">Answer: Yes / Maybe / No</div>
+      </div>
+      <div class="answers" role="radiogroup" aria-label="Question ${q.id}">
+        ${["yes","maybe","no"].map(val => `
+          <label data-val="${val}" for="q${q.id}-${val}">
+            <input type="radio" id="q${q.id}-${val}" name="q${q.id}" value="${val}">
+            <span style="opacity:.9">${val === "yes" ? "Yes" : val === "maybe" ? "Maybe" : "No"}</span>
+          </label>
+        `).join('')}
+      </div>
+    `;
+    frag.appendChild(row);
+  });
+  quizEl.appendChild(frag);
+}
+renderQuiz();
+
+/* ===========================
+   STATE & SCORING
+   =========================== */
+const valueMap = { yes:1, maybe:0.5, no:0 };
+const perAreaMax = 2; // two questions per area
+const totalQuestions = QUESTIONS.length;
+
+function getAnswers(){
+  const answers = {};
+  QUESTIONS.forEach(q => {
+    const sel = document.querySelector(`input[name="q${q.id}"]:checked`);
+    answers[q.id] = sel ? sel.value : null;
+  });
+  return answers;
+}
+
+function computeScores(answers){
+  const scores = {};
+  Object.keys(AREAS).forEach(k => scores[k]=0);
+  const positivesByArea = {};
+  Object.keys(AREAS).forEach(k => positivesByArea[k]=[]);
+
+  QUESTIONS.forEach(q=>{
+    const v = answers[q.id];
+    if(!v) return;
+    const weight = valueMap[v];
+    q.areas.forEach(area=>{
+      scores[area] += weight;
+      if(weight>0){
+        positivesByArea[area].push({id:q.id, text:q.text, weight});
+      }
+    });
+  });
+  // Normalize to percentage (0..100)
+  const perc = {};
+  for(const k in scores){
+    const pct = Math.round((scores[k] / perAreaMax) * 100);
+    perc[k] = Math.max(0, Math.min(100, pct));
+  }
+  return { raw:scores, perc, positivesByArea };
+}
+
+function unansweredCount(){
+  const a = getAnswers();
+  return Object.values(a).filter(v => !v).length;
+}
+
+// NEW: return list of unanswered question IDs
+function findUnanswered(){
+  return QUESTIONS
+    .filter(q => !document.querySelector(`input[name="q${q.id}"]:checked`))
+    .map(q => q.id);
+}
+
+function updateProgressUI(){
+  const ans = getAnswers();
+  const answered = Object.values(ans).filter(Boolean).length;
+  const pct = Math.round((answered/totalQuestions)*100);
+  progressFill.style.width = pct + '%';
+  answeredCountEl.textContent = answered;
+  // mark selected labels
+  QUESTIONS.forEach(q=>{
+    ["yes","maybe","no"].forEach(val=>{
+      const label = document.querySelector(`label[for="q${q.id}-${val}"]`);
+      const input = document.getElementById(`q${q.id}-${val}`);
+      if(label) label.classList.toggle('active', input.checked);
+    });
+  });
+}
+
+quizEl.addEventListener('change', updateProgressUI);
+
+/* ===========================
+   RESULTS RENDERING
+   =========================== */
+const resultsEl = document.getElementById('results');
+const barsEl = document.getElementById('bars');
+const topAreasEl = document.getElementById('topAreas');
+const summaryBadge = document.getElementById('summaryBadge');
+
+function renderBars(perc){
+  barsEl.innerHTML = '';
+  // sort by percent desc
+  const entries = Object.entries(perc).sort((a,b)=>b[1]-a[1]);
+  entries.forEach(([key, pct])=>{
+    const row = document.createElement('div');
+    row.className='bar';
+    row.innerHTML = `
+      <div class="muted">${AREAS[key].name}</div>
+      <div class="track"><div class="fill" style="width:${pct}%"></div></div>
+      <div class="pct">${pct}%</div>
+    `;
+    barsEl.appendChild(row);
+  });
+}
+
+function pickTop(perc, n=3){
+  return Object.entries(perc)
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,n)
+    .map(([k,v])=>({key:k, pct:v}));
+}
+
+function topReasons(positivesByArea, key, max=3){
+  const arr = (positivesByArea[key]||[])
+    .slice() // copy
+    .sort((a,b)=> b.weight - a.weight || a.id - b.id);
+  return arr.slice(0,max);
+}
+
+function renderTopAreas(top, data){
+  topAreasEl.innerHTML='';
+  top.forEach((item, idx)=>{
+    const area = AREAS[item.key];
+    const reasons = topReasons(data.positivesByArea, item.key, 3);
+    const card = document.createElement('div');
+    card.className='area-card';
+    card.innerHTML = `
+      <h4>${idx===0 ? "Top Match" : `#${idx+1}`} · ${area.name} <span class="badge" style="margin-left:6px">${item.pct}% fit</span></h4>
+      <p class="muted">${area.blurb}</p>
+      <div class="why"><strong>Why this fits:</strong> ${
+        reasons.length ? reasons.map(r=>`Q${r.id}: ${r.text}`).join(" • ") : "Based on your overall pattern of answers."
+      }</div>
+      <div class="hr"></div>
+      <div class="muted"><strong>First steps (90-day ideas):</strong> ${area.steps.join(" · ")}</div>
+    `;
+    topAreasEl.appendChild(card);
+  });
+}
+
+// UPDATED: alert shows which questions are missing and scrolls to the first one
+function showResults(){
+  const missingIDs = findUnanswered();
+  if(missingIDs.length > 0){
+    const pretty = missingIDs.map(id => `Q${id}`).join(', ');
+    alert(`You still have ${missingIDs.length} unanswered question${missingIDs.length>1?'s':''}:\n${pretty}\n\nPlease answer them to see your results.`);
+    // focus the first missing
+    const firstId = missingIDs[0];
+    const firstRow = document.querySelector(`label[for="q${firstId}-yes"]`)?.closest('.q');
+    if(firstRow){
+      firstRow.scrollIntoView({behavior:'smooth', block:'center'});
+      firstRow.classList.add('highlight-missing');
+      setTimeout(()=>firstRow.classList.remove('highlight-missing'), 1800);
+    }
+    return;
+  }
+
+  const answers = getAnswers();
+  const data = computeScores(answers);
+  renderBars(data.perc);
+  const top = pickTop(data.perc, 3);
+  renderTopAreas(top, data);
+  summaryBadge.textContent = `Top matches: ${top.map(t=>AREAS[t.key].name).join(" • ")}`;
+  resultsEl.classList.add('active');
+  resultsEl.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+/* ===========================
+   SAVE/LOAD/RESET/COPY/PRINT
+   =========================== */
+const STORAGE_KEY = "cyber-career-quiz-v1";
+
+function saveState(){
+  const answers = getAnswers();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(answers));
+  flash("Saved!");
+}
+
+function loadState(){
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if(!raw) return;
+  const answers = JSON.parse(raw);
+  QUESTIONS.forEach(q=>{
+    const v = answers[q.id];
+    if(!v) return;
+    const input = document.getElementById(`q${q.id}-${v}`);
+    if(input){ input.checked = true; }
+  });
+  updateProgressUI();
+}
+
+function resetForm(){
+  localStorage.removeItem(STORAGE_KEY);
+  document.querySelectorAll('input[type="radio"]').forEach(r=> r.checked=false);
+  updateProgressUI();
+  resultsEl.classList.remove('active');
+}
+
+function copySummary(){
+  const bars = [...document.querySelectorAll('#bars .bar')].map(row=>{
+    const name = row.querySelector('.muted').textContent.trim();
+    const pct = row.querySelector('.pct').textContent.trim();
+    return `${pct.padStart(4,' ')}  ${name}`;
+  }).join('\n');
+  const topCards = [...document.querySelectorAll('#topAreas .area-card')].map(card=>{
+    const title = card.querySelector('h4').textContent.trim();
+    const blurb = card.querySelector('p').textContent.trim();
+    const steps = card.querySelector('.muted + .hr + .muted')?.textContent.replace('First steps (90-day ideas):','').trim() || '';
+    return `${title}\n${blurb}\nFirst steps:${steps ? ' ' + steps : ''}`;
+  }).join('\n\n');
+
+  const text = `Cybersecurity Career Quiz — Results\n\nScores:\n${bars}\n\n${topCards}\n\nPowered by your answers to 30 questions.`;
+  navigator.clipboard.writeText(text)
+    .then(()=>flash("Summary copied!"))
+    .catch(()=>alert("Could not copy. Your browser may block clipboard access."));
+}
+
+function printPage(){ window.print(); }
+
+function flash(msg){
+  const n = document.createElement('div');
+  n.textContent = msg;
+  n.style.position='fixed';
+  n.style.bottom='20px';
+  n.style.right='20px';
+  n.style.background='linear-gradient(90deg, var(--accent), var(--accent-2))';
+  n.style.color='white';
+  n.style.padding='10px 14px';
+  n.style.borderRadius='12px';
+  n.style.boxShadow='0 10px 20px rgba(0,0,0,.3)';
+  n.style.zIndex='9999';
+  document.body.appendChild(n);
+  setTimeout(()=>n.remove(), 1400);
+}
+
+/* ===========================
+   HOOK UP BUTTONS
+   =========================== */
+document.getElementById('submitBtn').addEventListener('click', showResults);
+document.getElementById('saveBtn').addEventListener('click', saveState);
+document.getElementById('resetBtn').addEventListener('click', resetForm);
+document.getElementById('copyBtn').addEventListener('click', copySummary);
+document.getElementById('printBtn').addEventListener('click', printPage);
+
+// Initialize
+loadState();
+updateProgressUI();
+</script>
+</body>
+</html>
